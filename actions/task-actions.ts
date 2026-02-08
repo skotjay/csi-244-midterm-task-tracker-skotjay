@@ -17,10 +17,9 @@ import { Task } from "@/data/models/Task";
  * then revalidate pages that show tasks so the UI updates.
  */
 export async function createTask(formData: FormData) {
-  // Pull the value out of the form by "name" attribute.
   const rawTitle = formData.get("title");
 
-  // Basic server-side validation (required for real safety even if the client validates too).
+  // Server-side validation
   if (typeof rawTitle !== "string") {
     throw new Error("Title must be a string.");
   }
@@ -31,17 +30,63 @@ export async function createTask(formData: FormData) {
     throw new Error("Title is required.");
   }
 
-  // Connect to the DB (this uses the caching connection logic you already wrote).
+  // Ensure DB connection
   await connectToDatabase();
 
-  // Create the task (completed defaults to false; timestamps gives createdAt).
+  // Create task
   await Task.create({ title });
 
-  // Tell Next.js: "Hey, any route that displays tasks should refresh its data."
-  revalidatePath("/tasks");
+  // Revalidate the ROOT task list ("/")
+  revalidatePath("/");
 
-  // After creation, send the user back to the tasks list.
-  redirect("/tasks");
+  // Redirect back to the main task list
+  redirect("/");
 }
 
-//now i'm moving on to app/tasks/create/page.tsx to build the form that will call this action when submitted.
+/**
+ * note to self:
+ * This action toggles a task's `completed` state.
+ * The server decides the new value to keep MongoDB as the source of truth.
+ */
+export async function toggleTaskComplete(taskId: string) {
+  if (!taskId) {
+    throw new Error("Task ID is required.");
+  }
+
+  await connectToDatabase();
+
+  const task = await Task.findById(taskId);
+
+  if (!task) {
+    throw new Error("Task not found.");
+  }
+
+  // Flip completion state
+  task.completed = !task.completed;
+  await task.save();
+
+  // Revalidate routes that display this data
+  revalidatePath("/");
+  revalidatePath(`/tasks/${taskId}`);
+}
+
+/**
+ * note to self:
+ * This action permanently deletes a task from the database.
+ */
+export async function deleteTask(taskId: string) {
+  if (!taskId) {
+    throw new Error("Task ID is required.");
+  }
+
+  await connectToDatabase();
+
+  const deleted = await Task.findByIdAndDelete(taskId);
+
+  if (!deleted) {
+    throw new Error("Task not found.");
+  }
+
+  // Revalidate the main task list
+  revalidatePath("/");
+}
