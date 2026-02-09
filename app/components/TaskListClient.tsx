@@ -25,43 +25,59 @@ export default function TaskListClient({ tasks }: { tasks: Task[] }) {
         placeholder="search"
         value={search}
         onChange={(e) => setSearch(e.target.value)}
-        style={{ marginBottom: "1rem", width: "100%" }}
+        className="mb-4 w-full rounded border border-gray-300 px-3 py-2
+                   focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
 
-      <ul>
+      <ul className="space-y-2">
         {filteredTasks.map((task) => (
-          <li key={task._id}>
-            <Link href={`/tasks/${task._id}`}>
+          <li
+            key={task._id}
+            className="flex items-center justify-between rounded border px-3 py-2"
+          >
+            {/* TASK TITLE */}
+            <Link href={`/tasks/${task._id}`} className="flex-1">
               <span
-                style={{
-                  textDecoration: task.completed ? "line-through" : "none",
-                }}
+                className={`${
+                  task.completed ? "line-through text-gray-500" : ""
+                }`}
               >
                 {task.title}
               </span>
             </Link>
 
-            {/* TOGGLE */}
-            <form
-              action={async () => {
-                await toggleTaskComplete(task._id);
-              }}
-              style={{ display: "inline", marginLeft: "1rem" }}
-            >
-              <button type="submit">
-                {task.completed ? "Undo" : "Complete"}
-              </button>
-            </form>
+            {/* ACTION BUTTONS */}
+            <div className="flex gap-2 ml-4">
+              {/* TOGGLE */}
+              <form
+                action={async () => {
+                  await toggleTaskComplete(task._id);
+                }}
+              >
+                <button
+                  type="submit"
+                  className="rounded bg-blue-600 px-3 py-1 text-white
+                             hover:bg-blue-700 transition"
+                >
+                  {task.completed ? "Undo" : "Complete"}
+                </button>
+              </form>
 
-            {/* DELETE */}
-            <form
-              action={async () => {
-                await deleteTask(task._id);
-              }}
-              style={{ display: "inline", marginLeft: "0.5rem" }}
-            >
-              <button type="submit">Delete</button>
-            </form>
+              {/* DELETE */}
+              <form
+                action={async () => {
+                  await deleteTask(task._id);
+                }}
+              >
+                <button
+                  type="submit"
+                  className="rounded bg-red-600 px-3 py-1 text-white
+                             hover:bg-red-700 transition"
+                >
+                  Delete
+                </button>
+              </form>
+            </div>
           </li>
         ))}
       </ul>
