@@ -1,3 +1,38 @@
+/**
+ * <details>
+ * <summary>RootLayout Component</summary>
+ *
+ * **What it does:**
+ * Serves as the root layout wrapper for the entire Next.js application. It applies global fonts (Geist Sans and Geist Mono) and sets up the HTML structure with metadata. All pages and components are rendered as children within this layout.
+ *
+ * **Why it's in this file:**
+ * The `layout.tsx` file in the app directory is Next.js's designated location for root layouts. This is the entry point for the application's HTML structure and global styling, making it the appropriate place to configure application-wide fonts, metadata, and layout structure.
+ * </details>
+ */
+
+/**
+ * <details>
+ * <summary>Metadata Configuration</summary>
+ *
+ * **What it does:**
+ * Exports metadata for the application including the page title and description. This metadata is used for SEO purposes and appears in browser tabs and search engine results.
+ *
+ * **Why it's in this file:**
+ * The root layout file is where global metadata should be defined in Next.js. This ensures consistent metadata across the entire application and is the conventional location for configuring site-wide SEO settings.
+ * </details>
+ */
+
+/**
+ * <details>
+ * <summary>Font Imports and Configuration</summary>
+ *
+ * **What it does:**
+ * Imports and configures the Geist and Geist Mono fonts from Google Fonts, creating CSS variables that can be used throughout the application for typography styling.
+ *
+ * **Why it's in this file:**
+ * Global fonts should be configured in the root layout to ensure they're loaded once and available application-wide. This is the most efficient location to initialize font variables that will be applied to the entire HTML document.
+ * </details>
+ */
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
@@ -32,3 +67,5 @@ export default function RootLayout({
     </html>
   );
 }
+
+// NEXT: app/page.tsx - Server Components & Data Fetching
